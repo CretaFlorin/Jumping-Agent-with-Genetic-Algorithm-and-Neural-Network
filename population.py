@@ -2,11 +2,13 @@ import random
 from constants import SCREEN_WIDTH as WIDTH, SCREEN_HEIGHT as HEIGHT, FPS
 from individual import Individual
 import numpy as np
+import pickle
+import os
 
 class Population:
     def __init__(self, size):
         self.individuals = []
-        self.size = size
+        self.size: int = size
         self.generation = 1
         
         for _ in range(size):
@@ -58,12 +60,17 @@ class Population:
             
     def go_to_next_gen(self):
         # luam jumatatea din populatie care s-a adaptat mai bine la environment
-        elites = sorted(self.individuals, key=lambda ind: ind.fitness)[-27: -1]
+        elites = sorted(self.individuals, key=lambda ind: ind.fitness, reverse=True)[:self.size//2]
         
         new_generation = self.reproduce(elites)
         
         self.generation += 1
         self.individuals = new_generation
+
+        # Load generation from file
+        os.makedirs("gens", exist_ok=True)
+        with open(f"gens/gen_{self.generation}.pkl", "wb") as f:
+            pickle.dump(self, f)
         print("GEN:", self.generation)
         
         
