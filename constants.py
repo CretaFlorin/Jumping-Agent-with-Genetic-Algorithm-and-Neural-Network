@@ -1,21 +1,26 @@
 # Constants
 SCREEN_WIDTH, SCREEN_HEIGHT = 1600, 1200
-FPS = 200
+FPS = 1000
 VISION_DIRS = [
     [-1, -1],
     [0, -1],
-    [1, -1],  # diagonals and straight up
-    [-0.5, -0.75],
-    [0.5, -0.75],  # slight angles
+    [1, -1],           # diagonals and straight up
+    [-0.66, -1],
+    [0.66, -1],       # slight upward angles
     [-0.25, -1],
-    [0.25, -1],  # narrow upward focus
+    [0.25, -1],         # narrow upward focus
+    [-0.5, 1],          
+    [0.5, 1],           
 ]
+
 SHOW_VISION_RAYS = False
+FRAMES_PER_VISION = 3
+MAX_VISION_DISTANCE = 150
 
 # physics
 GRAVITY = 0.2
-SIDE_SPEED = 3
-JUMP_STRENGTH = -6
+SIDE_SPEED = 4
+JUMP_STRENGTH = -8
 
 # genetics
 MUTANT_CHANCE = 0.05
@@ -24,4 +29,8 @@ MUTANT_CHANCE = 0.05
 INDIV_WIDTH = 10
 INDIV_HEIGHT = 20
 
-GENERATION_TIME = 3
+GENERATION_TIME = 300 # in number of actions taken (frames spent)
+POPULATION_SIZE = 80
+TRAINING_MODE = True
+ONLY_BEST = False
+RANDOM_SEED = 40
