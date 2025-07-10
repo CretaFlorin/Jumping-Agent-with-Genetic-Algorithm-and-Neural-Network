@@ -1,9 +1,15 @@
 import random
-from constants import SCREEN_WIDTH as WIDTH, SCREEN_HEIGHT as HEIGHT, VISION_DIRS, FRAMES_PER_VISION
+from constants import (
+    SCREEN_WIDTH as WIDTH,
+    SCREEN_HEIGHT as HEIGHT,
+    VISION_DIRS,
+    FRAMES_PER_VISION,
+)
 from individual import Individual
 import numpy as np
 import pickle
 import os
+
 
 class Population:
     def __init__(self, size):
@@ -11,14 +17,14 @@ class Population:
         self.size: int = size
         self.generation = 1
         self.frame_count = 0
-        
+
         for _ in range(size):
             x = random.randint(50, WIDTH - 50)
-            y = HEIGHT 
+            y = HEIGHT
             self.individuals.append(Individual(x, y))
-            
-    def update(self, screen, platforms, platform_index):
-        sense_now = (self.frame_count % FRAMES_PER_VISION == 0)
+
+    def update(self, screen, platforms):
+        sense_now = self.frame_count % FRAMES_PER_VISION == 0
         self.frame_count += 1
 
         for individual in self.individuals:
@@ -29,7 +35,9 @@ class Population:
             # print(len(individual.vision))
 
             if len(individual.vision) != individual.brain.input_size:
-                print(f"[WARN] vision size mismatch: {len(individual.vision)} (expected {individual.brain.input_size})")
+                print(
+                    f"[WARN] vision size mismatch: {len(individual.vision)} (expected {individual.brain.input_size})"
+                )
                 individual.vision = [0] * individual.brain.input_size
 
             result = individual.brain.forward(individual.vision)
@@ -50,11 +58,11 @@ class Population:
 
             individual.move(jump=jump, left=left, right=right)
             individual.update(platforms, screen)
-    
+
     def draw(self, screen):
         for individual in self.individuals:
             individual.draw(screen)
-            
+
     # def reproduce(self, elites, mutation_chance=0.1):
     #     new_gen = []
 
@@ -92,15 +100,16 @@ class Population:
 
     #     return new_gen
 
-
-
     def reproduce(self, population, mutation_chance=0.1):
         POP_SIZE = len(population)
         elites_count = max(1, POP_SIZE // 10)  # Top 10%
+        # elites_count = 0  # Top 10%
         new_gen = []
 
         # 1. Keep top 10% as is (elitism)
-        sorted_population = sorted(population, key=lambda ind: ind.fitness, reverse=True)
+        sorted_population = sorted(
+            population, key=lambda ind: ind.fitness, reverse=True
+        )
         elites = sorted_population[:elites_count]
         for elite in elites:
             elite.reset()
@@ -138,20 +147,15 @@ class Population:
 
         return new_gen
 
-            
     def go_to_next_gen(self):
-        # luam jumatatea din populatie care s-a adaptat mai bine la environment
-        pop = sorted(self.individuals, key=lambda ind: ind.fitness, reverse=True)[:self.size//2]
-        
+        pop = sorted(self.individuals, key=lambda ind: ind.fitness, reverse=True)[
+            : self.size // 2
+        ]
+        avg_fitness = sum(ind.fitness for ind in pop) / len(pop) if pop else 0
         new_generation = self.reproduce(pop)
-        
         self.generation += 1
         self.individuals = new_generation
-
-        # Load generation from file
         os.makedirs("gens", exist_ok=True)
         with open(f"gens/gen_{self.generation}.pkl", "wb") as f:
             pickle.dump(self, f)
-        print("GEN:", self.generation)
-        
-        
+        print("GEN:", self.generation, "AVG FIT:", avg_fitness)

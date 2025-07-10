@@ -13,7 +13,7 @@ from constants import MAX_VISION_DISTANCE
 
 
 class NeuralNetwork:
-    def __init__(self, input_size=27, hidden_size1=24, hidden_size2=12, output_size=3):
+    def __init__(self, input_size=9, hidden_size1=24, hidden_size2=12, output_size=3):
         self.input_size = input_size
         self.hidden_size1 = hidden_size1
         self.hidden_size2 = hidden_size2

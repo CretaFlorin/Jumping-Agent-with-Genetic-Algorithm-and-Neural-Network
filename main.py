@@ -24,7 +24,6 @@ def main(population_path):
     clock = pygame.time.Clock()
 
     platforms = create_platforms(seed=RANDOM_SEED)
-    platform_index = build_platform_index(platforms=platforms)
 
 
     if population_path:
@@ -51,7 +50,7 @@ def main(population_path):
         for platform in platforms:
             platform.draw(screen)
 
-        pop.update(screen, platforms, platform_index)
+        pop.update(screen, platforms)
         pop.draw(screen)
 
         actions_taken += 1

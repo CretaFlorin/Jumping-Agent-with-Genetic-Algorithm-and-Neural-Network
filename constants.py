@@ -13,24 +13,24 @@ VISION_DIRS = [
     [0.5, 1],           
 ]
 
-SHOW_VISION_RAYS = False
-FRAMES_PER_VISION = 3
-MAX_VISION_DISTANCE = 150
+SHOW_VISION_RAYS = True
+FRAMES_PER_VISION = 1
+MAX_VISION_DISTANCE = 200
 
 # physics
 GRAVITY = 0.2
 SIDE_SPEED = 4
-JUMP_STRENGTH = -8
+JUMP_STRENGTH = -7
 
 # genetics
-MUTANT_CHANCE = 0.05
+MUTANT_CHANCE = 0.1
 
 # individuals
 INDIV_WIDTH = 10
 INDIV_HEIGHT = 20
 
-GENERATION_TIME = 300 # in number of actions taken (frames spent)
-POPULATION_SIZE = 80
+GENERATION_TIME = 500 # in number of actions taken (frames spent)
+POPULATION_SIZE = 32
 TRAINING_MODE = True
 ONLY_BEST = False
-RANDOM_SEED = 40
+RANDOM_SEED = 41

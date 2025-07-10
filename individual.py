@@ -27,7 +27,8 @@ class Individual:
         height=INDIV_HEIGHT,
         color=(100, 255, 100),
     ):
-        self.x = x or random.randint(50, WIDTH - 50)
+        # self.x = x or random.randint(50, WIDTH - 50)
+        self.x = random.randint(WIDTH // 2 - 500, WIDTH // 2 + 500)
         self.y = y
         self.width = width
         self.height = height
@@ -85,6 +86,10 @@ class Individual:
                 self.y = platform.y - self.height
                 self.vel_y = 0
                 self.on_ground = True
+                self.fitness = platform.level**2
+                self.color = (0, min(255, self.fitness), 0)
+                if self.mutant:
+                    self.color = (min(255, self.fitness), 0, 0)
 
         # ground collision
         if self.y > HEIGHT - self.height:
@@ -118,13 +123,6 @@ class Individual:
 
         self.x += self.vel_x
         self.y += self.vel_y
-
-        self.horizontal_movement += self.vel_x // 5
-        if  HEIGHT - self.y + self.horizontal_movement > self.fitness:
-            self.fitness = HEIGHT - self.y + self.horizontal_movement
-            self.color = (0, min(self.fitness / 4, 255), 0)
-            if self.mutant:
-                self.color = (255, 0, 0)
 
     def sense_environment(self, screen, platforms):
         for p in platforms:
@@ -178,31 +176,21 @@ class Individual:
     def show_vision_rays(self, screen):
         if not SHOW_VISION_RAYS:
             return
-        
-        cx = self.center[0]
-        cy = self.center[1]
 
-        num_dirs = len(DIRS)
-        platforms_hit = self.vision[:num_dirs]
-        walls = self.vision[num_dirs : 2 * num_dirs]
-        empty = self.vision[2 * num_dirs :]
+        cx, cy = self.center
 
         for i, (dx, dy) in enumerate(DIRS):
-            # Draw platform hits in red
-            if platforms_hit[i] > 0:
-                end_x = cx + dx * platforms_hit[i]
-                end_y = cy + dy * platforms_hit[i]
-                pygame.draw.line(screen, (255, 0, 0), (cx, cy), (end_x, end_y))
-            # Draw wall hits in green
-            elif walls[i] > 0:
-                end_x = cx + dx * walls[i]
-                end_y = cy + dy * walls[i]
-                pygame.draw.line(screen, (0, 255, 0), (cx, cy), (end_x, end_y))
-            # Draw max vision distance in blue
-            elif empty[i] > 0:
-                end_x = cx + dx * empty[i]
-                end_y = cy + dy * empty[i]
+            dist = self.vision[i]
+            if dist == 0 or dist >= MAX_VISION_DISTANCE:
+                # No hit or max vision distance reached — draw blue line
+                end_x = cx + dx * MAX_VISION_DISTANCE
+                end_y = cy + dy * MAX_VISION_DISTANCE
                 pygame.draw.line(screen, (0, 0, 255), (cx, cy), (end_x, end_y))
+            else:
+                # Hit detected (platform or wall), draw red line
+                end_x = cx + dx * dist
+                end_y = cy + dy * dist
+                pygame.draw.line(screen, (255, 0, 0), (cx, cy), (end_x, end_y))
 
     # Consideram cele 4 serii de parametri ai
     # retelei setul de gene al unui individ

@@ -14,7 +14,7 @@ def create_platforms(seed=None):
     LEVEL_SPACING = 90
     PLATFORM_MIN_WIDTH = 100
     PLATFORM_MAX_WIDTH = 200
-    WIDTH_OFFSET = 1000
+    WIDTH_OFFSET = 500
 
     if seed is not None:
         random.seed(seed)
@@ -28,7 +28,7 @@ def create_platforms(seed=None):
             width = random.randint(PLATFORM_MIN_WIDTH, PLATFORM_MAX_WIDTH)
             x = level_width + space
 
-            platforms.append(Platform(x, y, width, PLATFORM_HEIGHT))
+            platforms.append(Platform(x, y, width, PLATFORM_HEIGHT, i+5))
             level_width += space + width
 
     return platforms
